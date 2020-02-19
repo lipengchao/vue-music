@@ -20,6 +20,7 @@ export default function jsonp(url, data, option) {
 }
 
 // 将data拼接到url上
+// data也是接口所需的参数
 function param (data) {
   let url = ''
   for (let k in data) {
