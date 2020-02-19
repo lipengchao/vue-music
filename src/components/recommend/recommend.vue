@@ -1,70 +1,90 @@
 <template>
     <div class="recommend">
-      <div class="recommend-content">
-        <!-- 轮播图 -->
-        <div class="slider-wrapper">
-          <div v-if="sliders.length" class="slider-content">
-            <slider>
-              <div v-for="item in sliders" :key="item.id">
-                <a :href="item.linkUrl">
-                  <img :src="item.picUrl" alt="">
-                </a>
-              </div>
-            </slider>
+      <scroll ref="scroll" class="recommend-content" :data="discList">
+        <div>
+          <!-- 轮播图 -->
+          <div class="slider-wrapper">
+            <div v-if="sliders.length" class="slider-content">
+              <slider>
+                <div v-for="item in sliders" :key="item.id">
+                  <a :href="item.linkUrl">
+                    <!-- fastclick 如果发现 class="needsclick" 就不会拦截-->
+                    <img class="needsclick" @load="loadImage" :src="item.picUrl" alt="">
+                  </a>
+                </div>
+              </slider>
+            </div>
+          </div>
+          <!-- 热门歌单推荐 -->
+          <div class="recommend-list">
+            <h1 class="list-title">热门歌单推荐</h1>
+            <ul>
+              <li v-for="item in discList" :key="item.dissid" class="item">
+                <div class="icon">
+                  <img width="60" height="60" v-lazy="item.imgurl" alt="">
+                </div>
+                <div class="text">
+                  <h2 class="name" v-html="item.creator.name"></h2>
+                  <p class="desc" v-html="item.dissname"></p>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
-        <!-- 热门歌单推荐 -->
-        <div class="recommend-list">
-          <h1 class="list-title">热门歌单推荐</h1>
-          <ul></ul>
+        <div class="loading-container" v-show="!discList.length">
+          <loading></loading>
         </div>
-      </div>
+      </scroll>
     </div>
 </template>
 
 <script>
   import Slider from 'base/slider/slider'
-  import { getRecommend } from 'api/recommend'
+  import Scroll from 'base/scroll/scroll'
+  import Loading from 'base/loading/loading'
+  import { getRecommend, getDiscList } from 'api/recommend'
   import { ERR_OK } from 'api/config'
 
   export default {
     name: 'recommend',
     components: {
-      Slider
+      Slider,
+      Scroll,
+      Loading
     },
     data () {
       return {
-        focus: []
+        sliders: [],
+        discList: []
       }
     },
     created () {
       this._getRecommend()
+      this._getDiscList()
     },
     methods: {
+      // 获取轮播图
       _getRecommend () {
         getRecommend().then((res) => {
           if (res.code === ERR_OK) {
-            this.focus = res.focus.data.content
-            console.log(this.focus)
+            this.sliders = res.data.slider
           }
         })
-      }
-    },
-    computed: {
-      sliders () {
-        const slider = []
-        const jumpPrefix = 'https://y.qq.com/n/yqq/album/'
-        if (this.focus) {
-          for (let i = 0; i < this.focus.length; i++) {
-            const item = this.focus[i]
-            const sliderItem = {}
-            sliderItem.id = item.id
-            sliderItem.linkUrl = jumpPrefix + item.jump_info.url + '.html'
-            sliderItem.picUrl = item.pic_info.url
-            slider.push(sliderItem)
+      },
+      // 获取推荐歌曲列表
+      _getDiscList () {
+        getDiscList().then((res) => {
+          if (res.code === ERR_OK) {
+            this.discList = res.data.list
           }
+        })
+      },
+      // 图片触发onload
+      loadImage () {
+        if (!this.checkLoaded) {
+          this.$refs.scroll.refresh()
+          this.checkLoaded = true
         }
-        return slider || []
       }
     }
   }
@@ -99,4 +119,30 @@
           text-align: center
           font-size: $font-size-medium
           color: $color-theme
+        .item
+          display: flex
+          padding: 0 20px 20px 20px
+          align-items: center
+          .icon
+            flex: 0 0 60px
+            padding-right: 20px
+            width: 60px
+          .text
+            display: flex
+            overflow: hidden
+            flex-direction: column
+            flex: 1
+            justify-content: center
+            line-height: 20px
+            font-size: $font-size-medium
+            .name
+              margin-bottom: 10px
+              color: $color-text
+            .desc
+              color: $color-text-d
+      .loading-container
+        position: absolute
+        width: 100%
+        top: 50%
+        transform: translateY(-50%)
 </style>
