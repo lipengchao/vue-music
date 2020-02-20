@@ -8,6 +8,7 @@ import axios from 'axios'
 
 const debug = process.env.NODE_ENV !== 'production'
 
+// 获取轮播图数据
 export function getRecommend () {
   // 线上环境地址，同学们根据自己的需要配置修改
   const url = debug ? '/api/getTopBanner' : 'http://ustbhuangyi.com/music/api/getTopBanner'
@@ -51,6 +52,7 @@ export function getRecommend () {
   })
 }
 
+// 获取推荐列表数据
 export function getDiscList () {
   // 线上环境地址，同学们根据自己的需要配置修改
   const url = debug ? '/api/getDiscList' : 'http://ustbhuangyi.com/music/api/getDiscList'

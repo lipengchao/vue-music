@@ -5,7 +5,7 @@
  */
 import originJSONP from 'jsonp'
 
-export default function jsonp(url, data, option) {
+export default function jsonp (url, data, option) {
   url += (url.indexOf('?') < 0 ? '?' : '&') + param(data)
   // resolve 成功，reject失败
   return new Promise((resolve, reject) => {
