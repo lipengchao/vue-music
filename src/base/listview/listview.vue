@@ -11,7 +11,7 @@
       <li v-for="(group, index) in data" class="list-group" :key="index" ref="listGroup">
         <h2 class="list-group-title">{{ group.title }}</h2>
         <ul>
-          <li v-for="item in group.items" :key="item.id" class="list-group-item">
+          <li @click="selectItem(item)" v-for="item in group.items" :key="item.id" class="list-group-item">
             <img class="avatar" v-lazy="item.avatar" alt="">
             <span class="name">{{ item.name }}</span>
           </li>
@@ -133,6 +133,9 @@
       }
     },
     methods: {
+      selectItem (item) {
+        this.$emit('select', item)
+      },
       // 监听右侧字母快速导航栏点击事件
       onShortcutTouchStart (e) {
         let anchorIndex = parseInt(getData(e.target, 'index'))
