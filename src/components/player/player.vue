@@ -67,7 +67,9 @@
             <p class="desc" v-html="currentSong.singer"></p>
           </div>
           <div class="control">
-            <i :class="miniIcon" @click.stop="togglePlaying"></i>
+            <progress-circle :radius="radius" :percent="percent">
+              <i class="icon-mini" :class="miniIcon" @click.stop="togglePlaying"></i>
+            </progress-circle>
           </div>
           <div class="control">
             <i class="icon-playlist"></i>
@@ -83,16 +85,19 @@
   import animations from 'create-keyframe-animation'
   import { prefixStyle } from 'common/js/dom'
   import ProgressBar from 'base/progress-bar/progress-bar'
+  import ProgressCircle from 'base/progress-circle/progress-circle'
   const transform = prefixStyle('transform')
   export default {
     name: 'player',
     components: {
-      ProgressBar
+      ProgressBar,
+      ProgressCircle
     },
     data () {
       return {
         songReady: false,
-        currentTime: 0
+        currentTime: 0,
+        radius: 32
       }
     },
     computed: {
@@ -133,6 +138,13 @@
         this.$nextTick(() => {
           newPlaying ? audio.play() : audio.pause()
         })
+      },
+      fullScreen (newVal) {
+        if (newVal) {
+          setTimeout(() => {
+            this.$refs.progressBar.setProgressOffset(this.percent)
+          }, 20)
+        }
       }
     },
     methods: {

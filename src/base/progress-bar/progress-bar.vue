@@ -32,12 +32,7 @@
     watch: {
       // 进度条百分比
       percent (newPercent) {
-        if (newPercent >= 0 && !this.touch.initiated) {
-          const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth
-          // 计算偏移量
-          const offsetWidth = newPercent * barWidth
-          this._offset(offsetWidth)
-        }
+        this.setProgressOffset(newPercent)
       }
     },
     methods: {
@@ -62,6 +57,13 @@
       progressTouchEnd () {
         this.touch.initiated = false
         this._triggerPercent()
+      },
+      setProgressOffset (percent) {
+        if (percent >= 0 && !this.touch.initiated) {
+          const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth
+          const offsetWidth = percent * barWidth
+          this._offset(offsetWidth)
+        }
       },
       _offset (offsetWidth) {
         this.$refs.progress.style.width = `${offsetWidth}px`
