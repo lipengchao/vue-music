@@ -21,7 +21,7 @@
           <div class="middle">
             <div class="middle-l">
               <div class="cd-wrapper" ref="cdWrapper">
-                <div class="cd">
+                <div class="cd" :class="cdRotate">
                   <img class="image" :src="currentSong.image" alt="">
                 </div>
               </div>
@@ -32,14 +32,14 @@
               <div class="icon i-left">
                 <i class="icon-sequence"></i>
               </div>
-              <div class="icon i-left">
-                <i class="icon-prev"></i>
+              <div class="icon i-left" :class="disableCls">
+                <i @click="prev" class="icon-prev"></i>
               </div>
-              <div class="icon i-center">
-                <i class="needsclick  icon-play"></i>
+              <div class="icon i-center" :class="disableCls">
+                <i @click="togglePlaying" :class="playIcon"></i>
               </div>
-              <div class="icon i-right">
-                <i class="icon-next"></i>
+              <div class="icon i-right" :class="disableCls">
+                <i @click="next" class="icon-next"></i>
               </div>
               <div class="icon i-right">
                 <i class="icon icon-not-favorite"></i>
@@ -52,7 +52,7 @@
         <div class="mini-player" v-show="!fullScreen" @click="open">
           <div class="icon">
             <div class="imgWrapper" ref="miniWrapper">
-              <img width="40" height="40" :src="currentSong.image" alt="">
+              <img :class="cdRotate" width="40" height="40" :src="currentSong.image" alt="">
             </div>
           </div>
           <div class="text">
@@ -60,13 +60,14 @@
             <p class="desc" v-html="currentSong.singer"></p>
           </div>
           <div class="control">
-            <i class="icon-mini"></i>
+            <i :class="miniIcon" @click.stop="togglePlaying"></i>
           </div>
           <div class="control">
             <i class="icon-playlist"></i>
           </div>
         </div>
       </transition>
+      <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error"></audio>
     </div>
 </template>
 
@@ -77,12 +78,46 @@
   const transform = prefixStyle('transform')
   export default {
     name: 'player',
+    data () {
+      return {
+        songReady: false
+      }
+    },
     computed: {
+      // cd 图片旋转
+      cdRotate () {
+        return this.playing ? 'play' : 'play pause'
+      },
+      // 播放按钮
+      playIcon () {
+        return this.playing ? 'icon-pause' : 'icon-play'
+      },
+      miniIcon () {
+        return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
+      },
+      disableCls () {
+        return this.songReady ? '' : 'disable'
+      },
       ...mapGetters([
         'fullScreen',
         'playlist',
-        'currentSong'
+        'currentSong',
+        'playing',
+        'currentIndex'
       ])
+    },
+    watch: {
+      currentSong () {
+        this.$nextTick(() => {
+          this.$refs.audio.play()
+        })
+      },
+      playing (newPlaying) {
+        const audio = this.$refs.audio
+        this.$nextTick(() => {
+          newPlaying ? audio.play() : audio.pause()
+        })
+      }
     },
     methods: {
       back () {
@@ -129,6 +164,49 @@
         this.$refs.cdWrapper.style.transition = ''
         this.$refs.cdWrapper.style[transform] = ''
       },
+      // 控制歌曲播放暂停
+      togglePlaying () {
+        if (!this.songReady) {
+          return
+        }
+        this.setPlayingState(!this.playing)
+      },
+      // 上一首
+      prev () {
+        if (!this.songReady) {
+          return
+        }
+        let index = this.currentIndex - 1
+        if (index === -1) {
+          index = this.playlist.length - 1
+        }
+        this.setCurrentIndex(index)
+        if (!this.playing) {
+          this.togglePlaying()
+        }
+        this.songReady = false
+      },
+      // 下一首
+      next () {
+        if (!this.songReady) {
+          return
+        }
+        let index = this.currentIndex + 1
+        if (index === this.playlist.length) {
+          index = 0
+        }
+        this.setCurrentIndex(index)
+        if (!this.playing) {
+          this.togglePlaying()
+        }
+        this.songReady = false
+      },
+      ready () {
+        this.songReady = true
+      },
+      error () {
+        this.songReady = true
+      },
       // 获取初始位置和缩放尺寸
       _getPosAndScale () {
         const targetWidth = 40
@@ -146,7 +224,9 @@
         }
       },
       ...mapMutations({
-        setFullScreen: 'SET_FULL_SCREEN'
+        setFullScreen: 'SET_FULL_SCREEN',
+        setPlayingState: 'SET_PLAYING_STATE',
+        setCurrentIndex: 'SET_CURRENT_INDEX'
       })
     }
   }
@@ -225,6 +305,10 @@
               width: 100%
               height: 100%
               border-radius: 50%
+              &.play
+                animation: rotate 20s linear infinite
+              &.pause
+                animation-play-state: paused
               img
                 position: absolute
                 left: 0
@@ -244,6 +328,8 @@
           .icon
             flex: 1
             color: $color-theme
+            &.disable
+              color: $color-theme-d
             i
               font-size: 30px
             &.i-left
@@ -287,6 +373,10 @@
           height: 100%
           img
             border-radius: 50%
+            &.play
+              animation: rotate 10s linear infinite
+            &.pause
+              animation-play-state: paused
       .text
         display: flex
         flex: 1
@@ -315,4 +405,9 @@
           position: absolute
           left: 0
           top: 0
+  @keyframes rotate
+    0%
+      transform: rotate(0)
+    100%
+      transform: rotate(360deg)
 </style>

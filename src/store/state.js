@@ -10,7 +10,7 @@ const state = {
   // 歌手信息
   singer: {},
   // 是否播放
-  playing: false,
+  playing: true,
   // 是否全屏
   fullScreen: false,
   // 播放列表
