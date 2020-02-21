@@ -28,6 +28,13 @@
             </div>
           </div>
           <div class="bottom">
+            <div class="progress-wrapper">
+              <span class="time time-l">{{format(currentTime)}}</span>
+              <div class="progress-bar-wrapper">
+                <progress-bar :percent="percent" @percentChange="percentChange" ref="progressBar"></progress-bar>
+              </div>
+              <span class="time time-r">{{format(currentSong.duration)}}</span>
+            </div>
             <div class="operators">
               <div class="icon i-left">
                 <i class="icon-sequence"></i>
@@ -67,7 +74,7 @@
           </div>
         </div>
       </transition>
-      <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error"></audio>
+      <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error" @timeupdate="updateTime"></audio>
     </div>
 </template>
 
@@ -75,12 +82,17 @@
   import { mapGetters, mapMutations } from 'vuex'
   import animations from 'create-keyframe-animation'
   import { prefixStyle } from 'common/js/dom'
+  import ProgressBar from 'base/progress-bar/progress-bar'
   const transform = prefixStyle('transform')
   export default {
     name: 'player',
+    components: {
+      ProgressBar
+    },
     data () {
       return {
-        songReady: false
+        songReady: false,
+        currentTime: 0
       }
     },
     computed: {
@@ -97,6 +109,10 @@
       },
       disableCls () {
         return this.songReady ? '' : 'disable'
+      },
+      // 进度条百分比
+      percent () {
+        return this.currentTime / this.currentSong.duration
       },
       ...mapGetters([
         'fullScreen',
@@ -120,6 +136,13 @@
       }
     },
     methods: {
+      // 进度条改改
+      percentChange (percent) {
+        this.$refs.audio.currentTime = this.currentSong.duration * percent
+        if (!this.playing) {
+          this.togglePlaying()
+        }
+      },
       back () {
         this.setFullScreen(false)
       },
@@ -206,6 +229,26 @@
       },
       error () {
         this.songReady = true
+      },
+      updateTime (e) {
+        this.currentTime = e.target.currentTime
+      },
+      // 格式化时间戳
+      format (interval) {
+        // |0 向下取整
+        interval = interval | 0
+        const minute = this._pad(interval / 60 | 0)
+        const second = this._pad(interval % 60)
+        return `${minute}:${second}`
+      },
+      // 时间补0
+      _pad (num, n = 2) {
+        let len = num.toString().length
+        while (len < n) {
+          num = '0' + num
+          len++
+        }
+        return num
       },
       // 获取初始位置和缩放尺寸
       _getPosAndScale () {
@@ -322,6 +365,24 @@
         position: absolute
         bottom: 50px
         width: 100%
+        .progress-wrapper
+          display: flex
+          align-items: center
+          width: 80%
+          margin: 0px auto
+          padding: 10px 0
+          .time
+            color: $color-text
+            font-size: $font-size-small
+            flex: 0 0 40px
+            line-height: 30px
+            width: 40px
+            &.time-l
+              text-align: left
+            &.time-r
+              text-align: right
+          .progress-bar-wrapper
+            flex: 1
         .operators
           display: flex
           align-items: center
