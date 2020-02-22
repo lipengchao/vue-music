@@ -19,3 +19,5 @@ export const currentSong = (state) => {
 }
 // 返回歌单对象
 export const disc = state => state.disc
+// 返回榜单对象
+export const topList = state => state.topList

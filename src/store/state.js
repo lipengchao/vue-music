@@ -22,6 +22,8 @@ const state = {
   // 当前播放索引
   currentIndex: -1,
   // 歌单对象
-  disc: {}
+  disc: {},
+  // 榜单对象
+  topList: {}
 }
 export default state
