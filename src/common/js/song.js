@@ -3,11 +3,8 @@
  * @date 2020/2/20 15:09
  * @desc 封装歌曲类
  */
-// eslint-disable-next-line no-unused-vars
 import { getLyric, getSongsUrl } from 'api/song'
-// eslint-disable-next-line no-unused-vars
 import { ERR_OK } from 'api/config'
-// eslint-disable-next-line no-unused-vars
 import { Base64 } from 'js-base64'
 
 export default class Song {
@@ -30,6 +27,22 @@ export default class Song {
     this.duration = duration
     this.image = image
     this.url = url
+  }
+
+  getLyric () {
+    if (this.lyric) {
+      return Promise.resolve(this.lyric)
+    }
+    return new Promise((resolve, reject) => {
+      getLyric(this.mid).then((res) => {
+        if (res.retcode === ERR_OK) {
+          this.lyric = Base64.decode(res.lyric)
+          resolve(this.lyric)
+        } else {
+          reject(new Error('no lyric'))
+        }
+      })
+    })
   }
 }
 
