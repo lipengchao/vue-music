@@ -64,7 +64,6 @@
 </script>
 
 <style lang="stylus" scoped>
-  @import "~common/stylus/variable.styl"
   .slide-enter-active, .slide-leave-active
     transition: all .3s
   .slide-enter, .slide-leave-to
