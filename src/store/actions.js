@@ -7,6 +7,7 @@
 import * as types from './mutation-type'
 import { playMode } from 'common/js/config'
 import {shuffle} from 'common/js/util'
+import { saveSearch } from 'common/js/cache'
 
 function findIndex (list, song) {
   return list.findIndex((item) => {
@@ -14,6 +15,13 @@ function findIndex (list, song) {
   })
 }
 
+/**
+ * 选择歌曲播放
+ * @param commit
+ * @param state
+ * @param list
+ * @param index
+ */
 export const selectPlay = function ({commit, state}, {list, index}) {
   commit(types.SET_SEQUENCE_LIST, list)
   if (state.mode === playMode.random) {
@@ -27,7 +35,11 @@ export const selectPlay = function ({commit, state}, {list, index}) {
   commit(types.SET_FULL_SCREEN, true)
   commit(types.SET_PLAYING_STATE, true)
 }
-
+/**
+ * 随机播放歌曲
+ * @param commit
+ * @param list
+ */
 export const randomPlay = function ({commit}, {list}) {
   commit(types.SET_PLAY_MODE, playMode.random)
   commit(types.SET_SEQUENCE_LIST, list)
@@ -38,6 +50,12 @@ export const randomPlay = function ({commit}, {list}) {
   commit(types.SET_PLAYING_STATE, true)
 }
 
+/**
+ * 搜索插入歌曲
+ * @param commit
+ * @param state
+ * @param song
+ */
 export const insertSong = function ({commit, state}, song) {
   let playlist = state.playlist.slice()
   let sequnceList = state.sequenceList.slice()
@@ -79,4 +97,13 @@ export const insertSong = function ({commit, state}, song) {
   commit(types.SET_CURRENT_INDEX, currentIndex)
   commit(types.SET_FULL_SCREEN, true)
   commit(types.SET_PLAYING_STATE, true)
+}
+
+/**
+ * 保存搜索历史记录
+ * @param commit
+ * @param query
+ */
+export const saveSearchHistory = function ({commit}, query) {
+  commit(types.SET_SEARCH_HISTORY, saveSearch(query))
 }

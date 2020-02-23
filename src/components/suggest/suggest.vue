@@ -3,7 +3,9 @@
       class="suggest"
       :data="result"
       :pullup="pullup"
+      :beforeScroll="beforeScroll"
       @scrollToEnd="searchMore"
+      @beforeScroll="listScroll"
       ref="suggest"
     >
       <ul class="suggest-list">
@@ -60,7 +62,8 @@
         page: 1,
         result: [],
         pullup: true,
-        hasMore: true
+        hasMore: true,
+        beforeScroll: true
       }
     },
     watch: {
@@ -73,6 +76,9 @@
         const bottom = playlist.length > 0 ? '60px' : ''
         this.$refs.suggest.$el.style.bottom = bottom
         this.$refs.suggest.refresh()
+      },
+      listScroll () {
+        this.$emit('listScroll')
       },
       search () {
         this.page = 1
@@ -134,6 +140,7 @@
         } else {
           this.insertSong(item)
         }
+        this.$emit('select')
       },
       // 检测是否有更多数据
       _checkMore (data) {

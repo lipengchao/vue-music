@@ -21,3 +21,5 @@ export const currentSong = (state) => {
 export const disc = state => state.disc
 // 返回榜单对象
 export const topList = state => state.topList
+// 返回搜索对象
+export const searchHistory = state => state.searchHistory

@@ -5,6 +5,7 @@
  */
 
 import { playMode } from 'common/js/config'
+import { loadSearch } from 'common/js/cache'
 
 const state = {
   // 歌手信息
@@ -24,6 +25,8 @@ const state = {
   // 歌单对象
   disc: {},
   // 榜单对象
-  topList: {}
+  topList: {},
+  // 搜索历史
+  searchHistory: loadSearch()
 }
 export default state
