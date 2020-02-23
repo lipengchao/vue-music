@@ -34,13 +34,11 @@
   import Loading from 'base/loading/loading'
   import Singer from 'common/js/singer'
   import { mapMutations, mapActions } from 'vuex'
-  import { playlistMixin } from 'common/js/mixin'
 
   const TYPE_SINGER = 'singer'
   const perpage = 20
 
   export default {
-    mixins: [playlistMixin],
     name: 'suggest',
     components: {
       Loading,
@@ -72,9 +70,7 @@
       }
     },
     methods: {
-      handlePlaylist (playlist) {
-        const bottom = playlist.length > 0 ? '60px' : ''
-        this.$refs.suggest.$el.style.bottom = bottom
+      refresh () {
         this.$refs.suggest.refresh()
       },
       listScroll () {

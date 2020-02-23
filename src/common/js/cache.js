@@ -33,6 +33,28 @@ export function loadSearch () {
 }
 
 /**
+ * 从localStroage删除
+ * @param query
+ * @returns {*|undefined}
+ */
+export function deleteSearch (query) {
+  let searches = storage.get(SEARCH_KEY, [])
+  deleteFromArray(searches, (item) => {
+    return item === query
+  })
+  storage.set(SEARCH_KEY, searches)
+  return searches
+}
+
+/**
+ * 清空历史记录
+ */
+export function clearSearch () {
+  storage.remove(SEARCH_KEY)
+  return []
+}
+
+/**
  * 插入数组
  * @param arr
  * @param val
@@ -53,5 +75,17 @@ function insertArray (arr, val, compare, maxLen) {
   // 如果存储数据长度超过最大容量，就删除最后一个
   if (maxLen && arr.length > maxLen) {
     arr.pop()
+  }
+}
+
+/**
+ * 从数组中删除
+ * @param arr
+ * @param compare
+ */
+function deleteFromArray (arr, compare) {
+  const index = arr.findIndex(compare)
+  if (index > -1) {
+    arr.splice(index, 1)
   }
 }
