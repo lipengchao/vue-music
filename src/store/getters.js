@@ -23,3 +23,5 @@ export const disc = state => state.disc
 export const topList = state => state.topList
 // 返回搜索对象
 export const searchHistory = state => state.searchHistory
+// 返回播放历史
+export const playHistory = state => state.playHistory

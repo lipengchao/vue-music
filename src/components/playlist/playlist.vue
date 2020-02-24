@@ -4,8 +4,8 @@
       <div class="list-wrapper"  @click.stop>
         <div class="list-header">
           <h1 class="title">
-            <i class="icon icon-sequence"></i>
-            <span class="text">顺序播放</span>
+            <i class="icon" :class="iconMode" @click="changeMode"></i>
+            <span class="text">{{ modeText }}</span>
             <span class="clear" @click="showConfirm">
               <i class="icon-clear"></i>
             </span>
@@ -26,7 +26,7 @@
           </transition-group>
         </scroll>
         <div class="list-operate">
-          <div class="add">
+          <div class="add" @click="addSong">
             <i class="icon-add"></i>
             <span class="text">添加歌曲到队列</span>
           </div>
@@ -34,32 +34,40 @@
         <div class="list-close" @click="hide">
           <span>关闭</span>
         </div>
-        <confirm ref="confirm" @confirm="confirmClear" title="是否清空播放列表" confirmBtnText="清空"></confirm>
       </div>
+      <confirm ref="confirm" @confirm="confirmClear" title="是否清空播放列表" confirmBtnText="清空"></confirm>
+      <add-song ref="addSong"></add-song>
     </div>
   </transition>
 </template>
 
 <script>
-  import { mapGetters, mapMutations, mapActions } from 'vuex'
+  import { mapActions } from 'vuex'
   import Scroll from 'base/scroll/scroll'
   import { playMode } from 'common/js/config'
   import Confirm from 'base/confirm/confirm'
+  import {playerMixin} from 'common/js/mixin'
+  import AddSong from 'components/add-song/add-song'
   export default {
+    mixins: [playerMixin],
     name: 'playlist',
-    components: {Confirm, Scroll},
+    components: {AddSong, Confirm, Scroll},
     data () {
       return {
         showFlag: false
       }
     },
     computed: {
-      ...mapGetters([
-        'sequenceList',
-        'currentSong',
-        'playlist',
-        'mode'
-      ])
+      // 此处代码统一写到playerMixin方便复用
+      // ...mapGetters([
+      //   'sequenceList',
+      //   'currentSong',
+      //   'playlist',
+      //   'mode'
+      // ])
+      modeText () {
+        return this.mode === playMode.sequence ? '顺序播放' : this.mode === playMode.loop ? '单曲循环' : '随机播放'
+      }
     },
     watch: {
       currentSong (newSong, oldSong) {
@@ -70,6 +78,10 @@
       }
     },
     methods: {
+      // 显示添加歌曲页面
+      addSong () {
+        this.$refs.addSong.show()
+      },
       show () {
         this.showFlag = true
         setTimeout(() => {
@@ -119,10 +131,11 @@
         this.deleteSongList()
         this.hide()
       },
-      ...mapMutations({
-        setCurrentIndex: 'SET_CURRENT_INDEX',
-        setPlayingState: 'SET_PLAYING_STATE'
-      }),
+      // 此处代码统一写到playerMixin方便复用
+      // ...mapMutations({
+      //   setCurrentIndex: 'SET_CURRENT_INDEX',
+      //   setPlayingState: 'SET_PLAYING_STATE'
+      // }),
       ...mapActions([
         'deleteSong',
         'deleteSongList'

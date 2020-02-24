@@ -117,20 +117,21 @@
 </template>
 
 <script>
-  import { mapGetters, mapMutations } from 'vuex'
+  import { mapGetters, mapMutations, mapActions } from 'vuex'
   import animations from 'create-keyframe-animation'
   import { prefixStyle } from 'common/js/dom'
   import ProgressBar from 'base/progress-bar/progress-bar'
   import ProgressCircle from 'base/progress-circle/progress-circle'
   import { playMode } from 'common/js/config'
-  import { shuffle } from 'common/js/util'
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
   import Playlist from 'components/playlist/playlist'
+  import { playerMixin } from 'common/js/mixin'
 
   const transform = prefixStyle('transform')
   const transitionDuration = prefixStyle('transitionDuration')
   export default {
+    mixins: [playerMixin],
     name: 'player',
     components: {
       Playlist,
@@ -175,17 +176,22 @@
         return this.currentTime / this.currentSong.duration
       },
       // 播放模式图标
-      iconMode () {
-        return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
-      },
+      // 此处代码统一写到playerMixin方便复用
+      // iconMode () {
+      //   return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+      // },
       ...mapGetters([
         'fullScreen',
-        'playlist',
-        'currentSong',
+        // 此处代码统一写到playerMixin方便复用
+        // 'playlist',
+        // 此处代码统一写到playerMixin方便复用
+        // 'currentSong',
         'playing',
-        'currentIndex',
-        'mode',
-        'sequenceList'
+        'currentIndex'
+        // 此处代码统一写到playerMixin方便复用
+        // 'mode',
+        // 此处代码统一写到playerMixin方便复用
+        // 'sequenceList'
       ])
     },
     watch: {
@@ -226,19 +232,20 @@
         this.$refs.playlist.show()
       },
       // 改变播放状态
-      changeMode () {
-        const mode = (this.mode + 1) % 3
-        this.setPlayMode(mode)
-        let list = null
-        if (mode === playMode.random) {
-          // 打乱列表
-          list = shuffle(this.sequenceList)
-        } else {
-          list = this.sequenceList
-        }
-        this._resetCurrentIndex(list)
-        this.setPlaylist(list)
-      },
+      // 此处代码统一写到playerMixin方便复用
+      // changeMode () {
+      //   const mode = (this.mode + 1) % 3
+      //   this.setPlayMode(mode)
+      //   let list = null
+      //   if (mode === playMode.random) {
+      //     // 打乱列表
+      //     list = shuffle(this.sequenceList)
+      //   } else {
+      //     list = this.sequenceList
+      //   }
+      //   this._resetCurrentIndex(list)
+      //   this.setPlaylist(list)
+      // },
       // 进度条改改
       percentChange (percent) {
         const currentTime = this.currentSong.duration * percent
@@ -346,6 +353,7 @@
       // 歌曲准备完成
       ready () {
         this.songReady = true
+        this.savePlayHistory(this.currentSong)
       },
       // 歌曲加载发生错误
       error () {
@@ -456,12 +464,13 @@
       },
       // 重置当前歌曲index
       // 将当前正在播放的歌曲的索引设置为新的打乱顺序后正在播放的索引
-      _resetCurrentIndex (list) {
-        let index = list.findIndex((item) => {
-          return item.id === this.currentSong.id
-        })
-        this.setCurrentIndex(index)
-      },
+      // 此处代码统一写到playerMixin方便复用
+      // _resetCurrentIndex (list) {
+      //   let index = list.findIndex((item) => {
+      //     return item.id === this.currentSong.id
+      //   })
+      //   this.setCurrentIndex(index)
+      // },
       // 时间补0
       _pad (num, n = 2) {
         let len = num.toString().length
@@ -488,12 +497,19 @@
         }
       },
       ...mapMutations({
-        setFullScreen: 'SET_FULL_SCREEN',
-        setPlayingState: 'SET_PLAYING_STATE',
-        setCurrentIndex: 'SET_CURRENT_INDEX',
-        setPlayMode: 'SET_PLAY_MODE',
-        setPlaylist: 'SET_PLAYLIST'
-      })
+        setFullScreen: 'SET_FULL_SCREEN'
+        // 此处代码统一写到playerMixin方便复用
+        // setPlayingState: 'SET_PLAYING_STATE',
+        // 此处代码统一写到playerMixin方便复用
+        // setCurrentIndex: 'SET_CURRENT_INDEX',
+        // 此处代码统一写到playerMixin方便复用
+        // setPlayMode: 'SET_PLAY_MODE',
+        // 此处代码统一写到playerMixin方便复用
+        // setPlaylist: 'SET_PLAYLIST'
+      }),
+      ...mapActions([
+        'savePlayHistory'
+      ])
     }
   }
 </script>

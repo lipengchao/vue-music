@@ -39,7 +39,7 @@
   import Suggest from 'components/suggest/suggest'
   import { getHotKey } from 'api/search'
   import { ERR_OK } from 'api/config'
-  import { mapActions, mapGetters } from 'vuex'
+  import { mapActions } from 'vuex'
   import SearchList from 'base/search-list/search-list'
   import Confirm from 'base/confirm/confirm'
   import Scroll from 'base/scroll/scroll'
@@ -57,17 +57,19 @@
     },
     data () {
       return {
-        hotKeys: [],
-        query: ''
+        hotKeys: []
+        // 此处代码封装到searchMixin中
+        // query: ''
       }
     },
     computed: {
       shortcut () {
         return this.hotKeys.concat(this.searchHistory)
-      },
-      ...mapGetters([
-        'searchHistory'
-      ])
+      }
+      // 此处代码封装到searchMixin中
+      // ...mapGetters([
+      //   'searchHistory'
+      // ])
     },
     methods: {
       handlePlaylist (playlist) {
@@ -80,20 +82,24 @@
         this.$refs.shortcut.refresh()
       },
       // 点击热门搜索词查询
-      addQuery (query) {
-        this.$refs.searchBox.setQuery(query)
-      },
-      onQueryChange (query) {
-        this.query = query
-      },
+      // 此处代码封装到searchMixin中
+      // addQuery (query) {
+      //   this.$refs.searchBox.setQuery(query)
+      // },
+      // 此处代码封装到searchMixin中
+      // onQueryChange (query) {
+      //   this.query = query
+      // },
       // 使input失去焦点
-      blurInput () {
-        this.$refs.searchBox.blur()
-      },
+      // 此处代码封装到searchMixin中
+      // blurInput () {
+      //   this.$refs.searchBox.blur()
+      // },
       // 存储数据
-      saveSearch () {
-        this.saveSearchHistory(this.query)
-      },
+      // 此处代码封装到searchMixin中
+      // saveSearch () {
+      //   this.saveSearchHistory(this.query)
+      // },
       // 删除数据
       deleteOne (item) {
         this.deleteSearchHistory(item)
@@ -110,8 +116,10 @@
         })
       },
       ...mapActions([
-        'saveSearchHistory',
-        'deleteSearchHistory',
+        // 此处代码封装到searchMixin中
+        // 'saveSearchHistory',
+        // 此处代码封装到searchMixin中
+        // 'deleteSearchHistory',
         'clearSearchHistory'
       ])
     },
