@@ -6,24 +6,24 @@
           <h1 class="title">
             <i class="icon icon-sequence"></i>
             <span class="text">顺序播放</span>
-            <span class="clear">
+            <span class="clear" @click="showConfirm">
               <i class="icon-clear"></i>
             </span>
           </h1>
         </div>
         <scroll ref="listContent" :data="sequenceList" class="list-content">
-          <ul>
+          <transition-group ref="list" name="list" tag="ul">
             <li ref="listItem" class="item" v-for="(item, index) in sequenceList" :key="item.id" @click="selectItem(item, index)">
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{ item.name }}</span>
               <span class="like">
                 <i class="icon-not-favorite"></i>
               </span>
-              <span class="delete">
+              <span class="delete" @click.stop="deleteOne(item)">
                 <i class="icon-delete"></i>
               </span>
             </li>
-          </ul>
+          </transition-group>
         </scroll>
         <div class="list-operate">
           <div class="add">
@@ -34,18 +34,20 @@
         <div class="list-close" @click="hide">
           <span>关闭</span>
         </div>
+        <confirm ref="confirm" @confirm="confirmClear" title="是否清空播放列表" confirmBtnText="清空"></confirm>
       </div>
     </div>
   </transition>
 </template>
 
 <script>
-  import { mapGetters, mapMutations } from 'vuex'
+  import { mapGetters, mapMutations, mapActions } from 'vuex'
   import Scroll from 'base/scroll/scroll'
   import { playMode } from 'common/js/config'
+  import Confirm from 'base/confirm/confirm'
   export default {
     name: 'playlist',
-    components: {Scroll},
+    components: {Confirm, Scroll},
     data () {
       return {
         showFlag: false
@@ -101,10 +103,30 @@
         })
         this.$refs.listContent.scrollToElement(this.$refs.listItem[index], 300)
       },
+      // 删除当前歌曲
+      deleteOne (item) {
+        this.deleteSong(item)
+        // 当播放列表为0时隐藏列表面板
+        if (!this.playlist.length) {
+          this.hide()
+        }
+      },
+      // 显示确认框
+      showConfirm () {
+        this.$refs.confirm.show()
+      },
+      confirmClear () {
+        this.deleteSongList()
+        this.hide()
+      },
       ...mapMutations({
         setCurrentIndex: 'SET_CURRENT_INDEX',
         setPlayingState: 'SET_PLAYING_STATE'
-      })
+      }),
+      ...mapActions([
+        'deleteSong',
+        'deleteSongList'
+      ])
     }
   }
 </script>

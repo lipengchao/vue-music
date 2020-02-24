@@ -83,7 +83,7 @@
         </div>
       </transition>
       <transition name="mini">
-        <div class="mini-player" v-show="!fullScreen" @click="open">
+        <div class="mini-player" v-show="!fullScreen && sequenceList.length" @click="open">
           <div class="icon">
             <div class="imgWrapper" ref="miniWrapper">
               <img :class="cdRotate" width="40" height="40" :src="currentSong.image" alt="">
@@ -190,6 +190,9 @@
     },
     watch: {
       currentSong (newSong, oldSong) {
+        if (!newSong.id) {
+          return
+        }
         if (newSong.id === oldSong.id) {
           return
         }

@@ -124,3 +124,38 @@ export const deleteSearchHistory = function ({commit}, query) {
 export const clearSearchHistory = function ({commit}) {
   commit(types.SET_SEARCH_HISTORY, clearSearch())
 }
+
+/**
+ * 删除单条歌曲
+ * @param commit
+ */
+export const deleteSong = function ({commit, state}, song) {
+  let playlist = state.playlist.slice()
+  let sequnceList = state.sequenceList.slice()
+  let currentIndex = state.currentIndex
+  let pIndex = findIndex(playlist, song)
+  playlist.splice(pIndex, 1)
+  let sIndex = findIndex(sequnceList, song)
+  sequnceList.splice(sIndex, 1)
+
+  if (currentIndex > pIndex || currentIndex === playlist.length) {
+    currentIndex--
+  }
+  commit(types.SET_PLAYLIST, playlist)
+  commit(types.SET_SEQUENCE_LIST, sequnceList)
+  commit(types.SET_CURRENT_INDEX, currentIndex)
+
+  const playingState = playlist.length > 0
+  commit(types.SET_PLAYING_STATE, playingState)
+}
+
+/**
+ * 清空播放列表
+ * @param commit
+ */
+export const deleteSongList = function ({commit}) {
+  commit(types.SET_PLAYING_STATE, [])
+  commit(types.SET_SEQUENCE_LIST, [])
+  commit(types.SET_CURRENT_INDEX, -1)
+  commit(types.SET_PLAYING_STATE, false)
+}
