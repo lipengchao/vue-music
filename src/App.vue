@@ -3,6 +3,9 @@
     <!--  头部组件  -->
     <m-header></m-header>
     <tab></tab>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
     <player></player>
   </div>
 </template>

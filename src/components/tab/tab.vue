@@ -14,9 +14,6 @@
           <span class="tab-link">搜索</span>
         </router-link>
       </div>
-      <keep-alive>
-        <router-view></router-view>
-      </keep-alive>
     </div>
 </template>
 

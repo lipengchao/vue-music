@@ -13,6 +13,10 @@ const SEARCH_MAX_LENGTH = 15
 const PLAY_KEY = '__play__'
 // 存储歌曲最大容量
 const PLAY_MAX_LENGTH = 200
+// 存储收藏的key
+const FAVORITE_KEY = '__favorite__'
+// 存储收藏的最大容量
+const FAVORITE_MAX_LENGTH = 200
 
 /**
  * 存储搜索记录
@@ -78,6 +82,42 @@ export function savePlay (song) {
  */
 export function loadPlay () {
   return storage.get(PLAY_KEY, [])
+}
+
+/**
+ * 存储收藏列表
+ * @param song
+ * @returns {*|undefined}
+ */
+export function saveFavorite (song) {
+  let songs = storage.get(FAVORITE_KEY, [])
+  insertArray(songs, song, (item) => {
+    return song.id === item.id
+  }, FAVORITE_MAX_LENGTH)
+  storage.set(FAVORITE_KEY, songs)
+  return songs
+}
+
+/**
+ * 删除该条收藏数据
+ * @param song
+ * @returns {*|undefined}
+ */
+export function deleteFavorite (song) {
+  let songs = storage.get(FAVORITE_KEY, [])
+  deleteFromArray(songs, (item) => {
+    return song.id === item.id
+  })
+  storage.set(FAVORITE_KEY, songs)
+  return songs
+}
+
+/**
+ * 读取收藏列表
+ * @returns {*|undefined}
+ */
+export function loadFavorite () {
+  return storage.get(FAVORITE_KEY, [])
 }
 
 /**
