@@ -8,7 +8,7 @@ import jsonp from 'common/js/jsonp'
 import { commonParams, options } from './config'
 import axios from 'axios'
 
-const debug = process.env.NODE_ENV !== 'production'
+// const debug = process.env.NODE_ENV !== 'production'
 
 /**
  * 热门搜索词
@@ -34,7 +34,8 @@ export function getHotKey () {
  * @returns {Promise<T | never>}
  */
 export function search (query, page, zhida, perpage) {
-  const url = debug ? '/api/search' : 'http://ustbhuangyi.com/music/api/search'
+  // const url = debug ? '/api/search' : 'http://ustbhuangyi.com/music/api/search'
+  const url = '/api/search'
 
   const data = Object.assign({}, commonParams, {
     w: query,

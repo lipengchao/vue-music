@@ -6,12 +6,13 @@
 import { commonParams } from './config'
 import axios from 'axios'
 
-const debug = process.env.NODE_ENV !== 'production'
+// const debug = process.env.NODE_ENV !== 'production'
 
 // 获取轮播图数据
 export function getRecommend () {
   // 线上环境地址，同学们根据自己的需要配置修改
-  const url = debug ? '/api/getTopBanner' : 'http://ustbhuangyi.com/music/api/getTopBanner'
+  // const url = debug ? '/api/getTopBanner' : 'http://ustbhuangyi.com/music/api/getTopBanner'
+  const url = '/api/getTopBanner'
 
   const data = Object.assign({}, commonParams, {
     platform: 'yqq.json',
@@ -55,7 +56,8 @@ export function getRecommend () {
 // 获取推荐列表数据
 export function getDiscList () {
   // 线上环境地址，同学们根据自己的需要配置修改
-  const url = debug ? '/api/getDiscList' : 'http://ustbhuangyi.com/music/api/getDiscList'
+  // const url = debug ? '/api/getDiscList' : 'http://ustbhuangyi.com/music/api/getDiscList'
+  const url = '/api/getDiscList'
   const data = Object.assign({}, commonParams, {
     platform: 'yqq',
     hostUin: 0,
@@ -77,7 +79,8 @@ export function getDiscList () {
 
 // 获取歌单详情页数据
 export function getSongList (disstid) {
-  const url = debug ? '/api/getCdInfo' : 'http://ustbhuangyi.com/music/api/getCdInfo'
+  // const url = debug ? '/api/getCdInfo' : 'http://ustbhuangyi.com/music/api/getCdInfo'
+  const url = '/api/getCdInfo'
 
   const data = Object.assign({}, commonParams, {
     disstid,
