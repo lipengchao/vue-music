@@ -107,7 +107,7 @@
       <audio
         ref="audio"
         :src="currentSong.url"
-        @canplay="ready"
+        @play="ready"
         @error="error"
         @timeupdate="updateTime"
         @ended="end"
@@ -207,7 +207,8 @@
         if (this.currentLyric) {
           this.currentLyric.stop()
         }
-        setTimeout(() => {
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
           this.$refs.audio.play()
           this.getLyric()
         }, 1000)
@@ -319,6 +320,7 @@
         // 如果歌曲列表只有一首歌的时候让它单曲循环
         if (this.playlist.length === 1) {
           this.loop()
+          return
         } else {
           let index = this.currentIndex - 1
           if (index === -1) {
@@ -338,6 +340,7 @@
         }
         if (this.playlist.length === 1) {
           this.loop()
+          return
         } else {
           let index = this.currentIndex + 1
           if (index === this.playlist.length) {
@@ -388,6 +391,9 @@
       },
       getLyric () {
         this.currentSong.getLyric().then((lyric) => {
+          if (this.currentSong.lyric !== lyric) {
+            return
+          }
           this.currentLyric = new Lyric(lyric, this.handleLyric)
           if (this.playing) {
             // 如果歌曲正在播放，歌词也播放
