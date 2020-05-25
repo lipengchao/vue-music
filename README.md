@@ -1,6 +1,10 @@
 # vue-music
 
-> 一款用vue开发的音乐播放器
+> 一款用vue开发的音乐播放器，实现 了顺序播放、随机播放、单曲循环。这个小项目中定义了多个组件可以拿出来单独使用.
+
+![首页](https://github.com/lipengchao/vue-music/raw/master/static/首页.png)![歌词页](https://github.com/lipengchao/vue-music/raw/master/static/歌词页.png)![歌手歌曲列表页](https://github.com/lipengchao/vue-music/raw/master/static/歌手歌曲列表页.png)![最近播放](https://github.com/lipengchao/vue-music/raw/master/static/最近播放.png)![榜单页](https://github.com/lipengchao/vue-music/raw/master/static/榜单页.png)![播放页](https://github.com/lipengchao/vue-music/raw/master/static/播放页.png)
+
+![榜单页](https://github.com/lipengchao/vue-music/raw/master/static/榜单页.png)![榜单页](https://github.com/lipengchao/vue-music/raw/master/static/榜单页.png)
 
 ## Build Setup
 
