@@ -1,9 +1,11 @@
-/**
- * @author lenovo
- * @date 2020/2/20 15:09
- * @desc 封装歌曲类
+/*
+ * @Description: 封装歌曲类
+ * @Author: 雪中无处寻
+ * @Date: 2020-05-25 08:35:29
+ * @LastEditTime: 2020-05-25 09:23:03
+ * @LastEditors: 雪中无处寻
  */
-import { getLyric, getSongsUrl } from 'api/song'
+import SongApi from 'api/song'
 import { ERR_OK } from 'api/config'
 import { Base64 } from 'js-base64'
 
@@ -34,7 +36,7 @@ export default class Song {
       return Promise.resolve(this.lyric)
     }
     return new Promise((resolve, reject) => {
-      getLyric(this.mid).then((res) => {
+      SongApi.getLyric(this.mid).then((res) => {
         if (res.retcode === ERR_OK) {
           this.lyric = Base64.decode(res.lyric)
           resolve(this.lyric)
@@ -85,7 +87,7 @@ export function processSongsUrl (songs) {
   if (!songs.length) {
     return Promise.resolve(songs)
   }
-  return getSongsUrl(songs).then((purlMap) => {
+  return SongApi.getSongsUrl(songs).then((purlMap) => {
     songs = songs.filter((song) => {
       const purl = purlMap[song.mid]
       if (purl) {

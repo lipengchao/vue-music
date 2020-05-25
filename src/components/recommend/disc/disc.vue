@@ -7,7 +7,7 @@
 <script>
   import MusicList from 'components/music-list/music-list'
   import { mapGetters } from 'vuex'
-  import { getSongList } from 'api/recommend'
+  import RecommendApi from 'api/recommend'
   import { ERR_OK } from 'api/config'
   import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
 
@@ -33,12 +33,13 @@
       ])
     },
     methods: {
+      // 获取单曲列表
       _getSongList () {
         if (!this.disc.dissid) {
           this.$router.push('/recommend')
           return
         }
-        getSongList(this.disc.dissid).then((res) => {
+        RecommendApi.getSongList(this.disc.dissid).then((res) => {
           if (res.code === ERR_OK) {
             processSongsUrl(this._normalizeSongs(res.cdlist[0].songlist)).then((songs) => {
               this.songs = songs

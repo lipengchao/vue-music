@@ -6,7 +6,7 @@
 
 <script>
   import MusicList from 'components/music-list/music-list'
-  import { getMusicList } from 'api/rank'
+  import RankApi from 'api/rank'
   import { ERR_OK } from 'api/config'
   import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
   import { mapGetters } from 'vuex'
@@ -41,7 +41,7 @@
           this.$router.push('/rank')
           return
         }
-        getMusicList(this.topList.id).then((res) => {
+        RankApi.getMusicList(this.topList.id).then((res) => {
           if (res.code === ERR_OK) {
             processSongsUrl(this._normalizeSongs(res.songlist)).then((songs) => {
               this.songs = songs

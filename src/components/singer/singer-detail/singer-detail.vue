@@ -6,7 +6,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { getSingerDetail } from 'api/singer'
+  import SingerApi from 'api/singer'
   import { ERR_OK } from 'api/config'
   import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
   import MusicList from 'components/music-list/music-list'
@@ -41,7 +41,7 @@
           this.$router.push('/singer')
           return
         }
-        getSingerDetail(this.singer.id).then((res) => {
+        SingerApi.getSingerDetail(this.singer.id).then((res) => {
           if (res.code === ERR_OK) {
             processSongsUrl(this._normalizeSongs(res.data.list)).then((songs) => {
               this.songs = songs

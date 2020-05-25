@@ -37,7 +37,7 @@
 <script>
   import SearchBox from 'base/search-box/search-box'
   import Suggest from 'components/suggest/suggest'
-  import { getHotKey } from 'api/search'
+  import SearchApi from 'api/search'
   import { ERR_OK } from 'api/config'
   import { mapActions } from 'vuex'
   import SearchList from 'base/search-list/search-list'
@@ -109,7 +109,7 @@
         this.$refs.confirm.show()
       },
       _getHotKey () {
-        getHotKey().then((res) => {
+        SearchApi.getHotKey().then((res) => {
           if (res.code === ERR_OK) {
             this.hotKeys = res.data.hotkey.slice(0, 10)
           }

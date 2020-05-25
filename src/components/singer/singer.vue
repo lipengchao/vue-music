@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import { getSingerList } from 'api/singer'
+  import SingerApi from 'api/singer'
   import { ERR_OK } from 'api/config'
   import Singer from 'common/js/singer'
   import ListView from 'base/listview/listview'
@@ -40,7 +40,7 @@
         this.setSinger(singer)
       },
       _getSingerList () {
-        getSingerList().then((res) => {
+        SingerApi.getSingerList().then((res) => {
           if (res.code === ERR_OK) {
             this.singers = this._normalizeSinger(res.data.list)
           }

@@ -45,7 +45,7 @@
   import Loading from 'base/loading/loading'
   import { playlistMixin } from 'common/js/mixin'
   import { mapMutations } from 'vuex'
-  import { getRecommend, getDiscList } from 'api/recommend'
+  import RecommendApi from 'api/recommend'
   import { ERR_OK } from 'api/config'
 
   export default {
@@ -81,7 +81,7 @@
       },
       // 获取轮播图
       _getRecommend () {
-        getRecommend().then((res) => {
+        RecommendApi.getRecommend().then((res) => {
           if (res.code === ERR_OK) {
             this.sliders = res.data.slider
           }
@@ -89,7 +89,7 @@
       },
       // 获取推荐歌曲列表
       _getDiscList () {
-        getDiscList().then((res) => {
+        RecommendApi.getDiscList().then((res) => {
           if (res.code === ERR_OK) {
             this.discList = res.data.list
           }

@@ -27,7 +27,7 @@
 
 <script>
   import NoResult from 'base/no-result/no-result'
-  import { search } from 'api/search'
+  import SearchApi from 'api/search'
   import { ERR_OK } from 'api/config'
   import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
   import Scroll from 'base/scroll/scroll'
@@ -76,37 +76,33 @@
       listScroll () {
         this.$emit('listScroll')
       },
-      search () {
+      async search () {
         this.page = 1
         this.hasMore = true
         this.$refs.suggest.scrollTo(0, 0)
-        search(this.query, this.page, this.showSinger, perpage).then((res) => {
-          if (res.code === ERR_OK) {
-            this._genResult(res.data).then((result) => {
-              this.result = result
-              setTimeout(() => {
-                this._checkMore(res.data)
-              }, 20)
-            })
-          }
-        })
+        const res = await SearchApi.search(this.query, this.page, this.showSinger, perpage)
+        if (res.code === ERR_OK) {
+          const result = await this._genResult(res.data)
+          this.result = result
+          setTimeout(() => {
+            this._checkMore(res.data)
+          }, 20)
+        }
       },
       // 加载更多数据
-      searchMore () {
+      async searchMore () {
         if (!this.hasMore) {
           return
         }
         this.page++
-        search(this.query, this.page, this.showSinger, perpage).then((res) => {
-          if (res.code === ERR_OK) {
-            this._genResult(res.data).then((result) => {
-              this.result = this.result.concat(result)
-              setTimeout(() => {
-                this._checkMore(res.data)
-              }, 20)
-            })
-          }
-        })
+        const res = SearchApi.search(this.query, this.page, this.showSinger, perpage)
+        if (res.code === ERR_OK) {
+          const result = await this._genResult(res.data)
+          this.result = this.result.concat(result)
+          setTimeout(() => {
+            this._checkMore(res.data)
+          }, 20)
+        }
       },
       // 返回图标类名
       getIconCls (item) {
